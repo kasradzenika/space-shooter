@@ -18,7 +18,9 @@ public class GameController : MonoBehaviour {
 	bool gameOver = false;
 	bool restart = false;
 
-	void Start () {
+    public PlayerController playerController;
+
+    void Start () {
 		score = 0;
 		UpdateScore ();
 
@@ -71,5 +73,6 @@ public class GameController : MonoBehaviour {
 
 	void UpdateScore() {
 		scoreText.text = "Score: " + score;
+        playerController.CheckLevelUp( score );
 	}
 }

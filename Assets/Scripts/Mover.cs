@@ -6,7 +6,8 @@ public class Mover : MonoBehaviour {
 	[SerializeField] float speed;
 	Rigidbody rb;
 	
-	void Start () {
+	void Start ()
+    {
 		rb = GetComponent<Rigidbody> ();
 		rb.velocity = transform.forward * speed;
 	}

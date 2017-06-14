@@ -4,10 +4,7 @@ using System.Collections;
 [System.Serializable]
 public class Boundary {
 
-	public float xMin
-			   , xMax
-			   , zMin
-			   , zMax;
+	public float xMin, xMax, zMin, zMax;
 
 }
 
@@ -16,7 +13,7 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField] Boundary boundary;
 	[SerializeField] float shipSpeed;
     [SerializeField] float tilt;
-	[SerializeField] GameObject boltPrefab;
+	//[SerializeField] GameObject boltPrefab;
 	[SerializeField] Transform shotSpawn;
 	[SerializeField] float fireRate;
 
@@ -25,27 +22,31 @@ public class PlayerController : MonoBehaviour {
 	float moveHorizontal;
 	float moveVertical;
 	GameObject bolt;
-	float nextFire = 0.0f;
-	AudioSource fireSound; 
-
+	float nextFireTime = 0.0f;
+	AudioSource fireSound;
+    
+    public int gunLevel = 0;
+    public int[] levelUpPoints;
+    public GameObject[] bolts;
 	
-	void Awake () {
+	void Awake ()
+    {
 		ship = GetComponent<Rigidbody> ();
 		fireSound = GetComponent<AudioSource> ();
-
 	}
 
-	void Update () {
-
-		if(Input.GetButtonDown("Fire1") && Time.time > nextFire){
-			nextFire = Time.time + fireRate; 
-			bolt = Instantiate (boltPrefab, shotSpawn.position, shotSpawn.rotation) as GameObject;
+	void Update ()
+    {
+		if(Input.GetButtonDown("Fire1") && Time.time > nextFireTime)
+        {
+			nextFireTime = Time.time + fireRate; 
+			bolt = Instantiate (bolts[gunLevel], shotSpawn.position, Quaternion.identity) as GameObject;
 			fireSound.Play ();
 		}
 	}
 
-	void FixedUpdate () {
-
+	void FixedUpdate ()
+    {
 		// Move ship based on input
 		moveHorizontal = Input.GetAxis ("Horizontal") * shipSpeed;
 		moveVertical = Input.GetAxis ("Vertical") * shipSpeed;
@@ -58,4 +59,15 @@ public class PlayerController : MonoBehaviour {
 
 		ship.rotation = Quaternion.Euler (0.0f, 0.0f, ship.velocity.x * -tilt);
 	}
+    
+    public void CheckLevelUp(int score)
+    {
+        if (gunLevel >= levelUpPoints.Length)
+            return;
+
+        if(score >= levelUpPoints[gunLevel])
+        {
+            gunLevel++;
+        }
+    }
 }
